@@ -6,6 +6,10 @@ I implemented a rule-based firewall using a python class called FireWall. I used
 I used a pandas dataframe to encode the protocol and direction as hierarchical columns and the rows as the port number. Each entry in the dataframe
 corresponded to a list of instances of the class IPrange, which was able to take in IP addresses as ranges or single values and store them in constant space.
 
+
+I also created several test cases
+
+
 ## What I would do differently if I had more time
 
 I used Python because its the language I'm most familiar with for parsing csv files in and because

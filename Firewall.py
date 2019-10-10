@@ -35,12 +35,12 @@ class FireWall:
         #read csv
         self.readRules()
 
-
+    #initialize empty rules data structure
     def initializePolicyStorage(self):
         d = {('inbound','tcp'):np.zeros(65535+1,dtype=int), ('inbound','udp'):np.zeros(65535+1,dtype=int),
              ('outbound','tcp'):np.zeros(65535+1,dtype=int), ('outbound','udp'):np.zeros(65535+1,dtype=int)}
         self.rules = pd.DataFrame(d)
-    
+    #takes in one line from csv as subroutine of readRules
     def updatePolicy(self,direction:str,protocol:str,port:str,IPAddress:str):
         
         def updateSinglePort(direction:str,protocol:str,singleport:int,IPAddress:str):
@@ -59,16 +59,19 @@ class FireWall:
                 updateSinglePort(direction,protocol,port_num,IPAddress)
         else: #only one port number, not range
             updateSinglePort(direction,protocol,int(port),IPAddress)
-    
+            
+    #read in rules from csv file
     def readRules(self):
+        count = False
         with open(self.rulesFilePath) as f:
             for line in f:
                 direction,protocol,port,IPAddress = line.split(',')
-                if "direction" in direction: #check if we're at header
-                    continue
-                else:
+                #an efficient way to ignore the first line
+                if count:
                     self.updatePolicy(direction,protocol,port,IPAddress)
-    
+                else:
+                    count=True 
+    #returns if packet should be accepted
     def accept_packet(self,direction:str,protocol:str,port:int,ip_address:str):
         data_record = self.rules[direction,protocol][port]
         if isinstance(data_record,list):
